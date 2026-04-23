@@ -1,0 +1,10 @@
+{
+  "/sap": {
+    "target": "http://AZKTLDS5CP.kcloud.com:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/sap": "/sap"
+    }
+  }
+}

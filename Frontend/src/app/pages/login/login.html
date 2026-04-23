@@ -1,0 +1,109 @@
+<div class="min-h-screen flex flex-col md:flex-row font-sans">
+
+  <!-- LEFT DESIGN (Desktop Only) -->
+  <div class="hidden md:flex w-1/2 bg-gradient-to-br from-[#E85D5D] via-[#d94c4c] to-[#8B2E2E] 
+              items-center justify-center text-white relative overflow-hidden">
+
+    <!-- Glow Effects -->
+    <div class="absolute w-96 h-96 bg-white/10 rounded-full blur-3xl top-10 left-10"></div>
+    <div class="absolute w-72 h-72 bg-white/10 rounded-full blur-2xl bottom-10 right-10"></div>
+
+    <div class="text-center px-10 z-10">
+
+      <h2 class="text-4xl font-bold mb-4">
+        Customer Self-Service Portal
+      </h2>
+
+      <p class="opacity-90 text-lg leading-relaxed">
+        Access and monitor your complete business transactions with the organization, 
+        including <span class="font-semibold">Sales Orders</span>, 
+        <span class="font-semibold">Deliveries</span>, and 
+        <span class="font-semibold">Financial Records</span>, 
+        through a unified and secure platform.
+      </p>
+
+      <!-- Illustration -->
+      <div class="mt-10">
+        <img 
+          src="https://illustrations.popsy.co/red/work-from-home.svg" 
+          alt="illustration"
+          class="w-80 mx-auto drop-shadow-lg"
+        />
+      </div>
+
+      <!-- Bottom Info -->
+      <div class="mt-8 backdrop-blur-md bg-white/10 p-4 rounded-xl border border-white/20">
+        <p class="text-sm opacity-90">
+          Secure Access • Real-Time Data • Seamless Integration with SAP ERP
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT LOGIN -->
+  <div class="flex w-full md:w-1/2 min-h-screen items-center justify-center px-5
+              bg-gradient-to-br from-[#E85D5D] via-[#d94c4c] to-[#8B2E2E]
+              md:bg-none md:bg-gray-100">
+
+    <div class="w-full max-w-md bg-white p-8 md:p-10 rounded-3xl shadow-lg">
+
+      <!-- Title -->
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-3">
+        Customer Portal Access
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-center text-gray-500 text-sm mb-8">
+        Enter Customer ID and password to access the account.
+      </p>
+
+      <form (ngSubmit)="onLogin()">
+
+        <!-- Customer ID -->
+        <div class="mb-5">
+          <input
+            type="text"
+            [(ngModel)]="customerId"
+            name="customerId"
+            class="w-full px-4 py-3 rounded-xl 
+                   bg-gray-50 border border-gray-200
+                   focus:outline-none focus:ring-2 focus:ring-[#E85D5D]"
+            placeholder="Enter Customer ID"
+          />
+        </div>
+
+        <!-- Password -->
+        <div class="mb-6">
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            class="w-full px-4 py-3 rounded-xl 
+                   bg-gray-50 border border-gray-200
+                   focus:outline-none focus:ring-2 focus:ring-[#E85D5D]"
+            placeholder="Enter Password"
+          />
+        </div>
+
+        <!-- Login Button -->
+        <button
+          class="w-full bg-[#E85D5D] text-white py-3 rounded-xl 
+                 font-semibold text-lg 
+                 hover:bg-[#d94c4c] transition duration-300"
+        >
+          Log In to Portal
+        </button>
+
+        <!-- Error -->
+        <p class="text-red-500 text-sm mt-4 text-center" *ngIf="errorMsg">
+          Invalid Customer ID or Password. Please try again.
+        </p>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

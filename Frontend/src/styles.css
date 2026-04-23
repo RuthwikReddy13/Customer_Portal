@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary-main: #d94c4c;
+  --color-primary-hover: #E85D5D;
+  --color-primary-focus: #8B2E2E;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #f8fafc;
+}
+
+/* Professional Material Symbols (Thin & Outlined) */
+.material-symbols-rounded {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* Sleek Cards */
+.sleek-card {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition-shadow duration-300;
+}
+
+.sleek-title {
+  @apply text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 mb-2;
+}
+
+.sleek-value {
+  @apply text-3xl font-black text-slate-800 tracking-tighter;
+}
+
+/* Professional Data Table */
+.data-table {
+  @apply w-full text-left font-sans;
+}
+
+.data-table th {
+  @apply px-6 py-4 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100 bg-white;
+}
+
+.data-table td {
+  @apply px-6 py-4 border-b border-slate-50/50 bg-white group-hover:bg-slate-50/50 transition-colors;
+}
+
+/* Badges */
+.badge {
+  @apply px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest;
+}
+
+.badge-success {
+  @apply bg-emerald-50 text-emerald-600 border border-emerald-100;
+}
+
+.badge-warning {
+  @apply bg-amber-50 text-amber-600 border border-amber-100;
+}
+
+.badge-error {
+  @apply bg-rose-50 text-rose-600 border border-rose-100;
+}
+
+.badge-info {
+  @apply bg-blue-50 text-blue-600 border border-blue-100;
+}
+
+/* Metrics & Layout */
+.section-metric {
+  @apply p-8 bg-white rounded-3xl shadow-sm border border-slate-50 relative overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+}
+
+/* Filter Bar */
+.filter-bar {
+  @apply flex flex-col md:flex-row items-center gap-4 w-full bg-white/50 p-3 rounded-2xl border border-rose-50/50 backdrop-blur-sm mb-6;
+}
+
+.filter-input {
+  @apply w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] transition-all;
+}

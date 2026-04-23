@@ -1,0 +1,406 @@
+<div class="flex h-screen w-full bg-[#f0f2f7] overflow-hidden font-sans text-slate-800">
+
+  <!-- ═══════════════════════════════════════════ SIDEBAR ═══════════════════════════════════════════ -->
+  <aside class="w-[280px] bg-gradient-to-br from-[#E85D5D] via-[#d94c4c] to-[#8B2E2E] flex flex-col py-8 flex-shrink-0 z-20 shadow-[8px_0_32px_rgba(232,93,93,0.15)] text-white relative">
+    <!-- Glow Effects in Sidebar -->
+    <div class="absolute w-48 h-48 bg-white/10 rounded-full blur-3xl -top-10 -left-10"></div>
+    <div class="absolute w-32 h-32 bg-white/5 rounded-full blur-2xl bottom-20 -right-5"></div>
+
+    <!-- Logo -->
+    <div class="px-7 mb-10 flex items-center gap-3.5 relative z-10">
+      <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-xl flex-shrink-0">
+        <span class="material-symbols-rounded font-bold !text-[20px]">hub</span>
+      </div>
+      <div>
+        <h2 class="text-[14px] font-black tracking-tight text-white leading-tight">Customer Portal</h2>
+        <p class="text-[9px] font-bold text-white/70 uppercase tracking-[0.2em]">Enterprise Hub</p>
+      </div>
+    </div>
+
+    <!-- Nav Label -->
+    <div class="px-7 mb-3 relative z-10">
+      <p class="text-[9px] font-black text-white/40 uppercase tracking-[0.25em]">Navigation</p>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 w-full px-4 space-y-1 relative z-10">
+      <button *ngFor="let item of navItems" (click)="activeNav = item.key"
+        class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[13px] font-bold transition-all duration-300 group relative"
+        [ngClass]="activeNav === item.key
+          ? 'bg-white shadow-xl shadow-[#8B2E2E]/20 text-[#E85D5D]'
+          : 'text-white/80 hover:bg-white/10 hover:text-white'">
+
+        <span class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all"
+          [ngClass]="activeNav === item.key ? 'bg-[#E85D5D] text-white' : 'bg-white/10 text-white group-hover:bg-white/20'">
+          <span class="material-symbols-rounded !text-[18px]">{{ item.icon }}</span>
+        </span>
+        <span>{{ item.label }}</span>
+        <div *ngIf="activeNav === item.key" class="ml-auto w-1.5 h-1.5 rounded-full bg-[#E85D5D] shadow-[0_0_8px_rgba(232,93,93,0.5)]"></div>
+      </button>
+    </nav>
+
+    <!-- User Card -->
+    <div class="mt-auto px-4 relative z-10">
+      <div class="mb-4 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-3 shadow-lg">
+        <div class="w-9 h-9 rounded-full bg-white text-[#E85D5D] flex items-center justify-center text-sm font-black flex-shrink-0 shadow-md">
+          {{ (customerId || 'U').charAt(0).toUpperCase() }}
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.15em]">Portal User</p>
+          <p class="text-[11px] font-bold text-white truncate">{{ customerId }}</p>
+        </div>
+        <span class="ml-auto w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0 shadow-[0_0_10px_#4ade80]"></span>
+      </div>
+
+      <button (click)="logout()"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[12px] font-bold text-white/70 hover:bg-rose-600 hover:text-white transition-all group border border-white/5">
+        <span class="material-symbols-rounded !text-[18px]">logout</span>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════ MAIN AREA ═══════════════════════════════════════════ -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- ─── Sticky Header ─── -->
+    <header class="sticky top-0 z-10 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-8 py-4 flex flex-wrap justify-between items-center gap-3 shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-1 h-7 rounded-full bg-gradient-to-b from-[#E85D5D] to-[#c0392b]"></div>
+        <h1 class="text-lg font-black tracking-tight text-slate-800">
+          <span *ngIf="activeNav === 'dashboard'">Operations Command Center</span>
+          <span *ngIf="activeNav === 'sales'">Sales Order Management</span>
+          <span *ngIf="activeNav === 'finance'">Financial Ledger</span>
+          <span *ngIf="activeNav === 'delivery'">Logistics & Delivery</span>
+          <span *ngIf="activeNav === 'invoice'">Billing Queue</span>
+          <span *ngIf="activeNav === 'memo'">Credit / Debit Memos</span>
+          <span *ngIf="activeNav === 'profile'">My Profile</span>
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <!-- Search — dashboard activity ledger only -->
+        <div class="relative" *ngIf="activeNav === 'dashboard'">
+          <span class="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 !text-[16px] text-slate-400">search</span>
+          <input type="text" placeholder="Search activity..." [(ngModel)]="searchQuery" (input)="onSearch($event)"
+            class="bg-slate-50 border border-slate-200 rounded-full py-2 pl-9 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] transition-all w-52">
+        </div>
+
+        <!-- Date Range + Presets — dashboard activity ledger only -->
+        <ng-container *ngIf="activeNav === 'dashboard'">
+          <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-full px-3 py-2 shadow-sm">
+            <span class="material-symbols-rounded !text-[15px] text-slate-400">date_range</span>
+            <input type="date" [(ngModel)]="startDate" (change)="applyFilter(); activePreset='custom'"
+              class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
+            <span class="text-slate-300 text-xs">→</span>
+            <input type="date" [(ngModel)]="endDate" (change)="applyFilter(); activePreset='custom'"
+              class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
+          </div>
+          <div class="flex items-center gap-1">
+            <button *ngFor="let p of datePresets" (click)="applyPreset(p.key)"
+              class="px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-all"
+              [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-md shadow-rose-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'">
+              {{ p.label }}
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Live Badge -->
+        <div class="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">SAP Live</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── Dashboard Content ─── -->
+    <div class="p-8">
+
+      <!-- ════════════════════ DASHBOARD HUB ════════════════════ -->
+      <div *ngIf="activeNav === 'dashboard'" class="space-y-6">
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex items-center justify-center py-32">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-14 h-14 rounded-full border-4 border-slate-100 border-t-[#E85D5D] animate-spin"></div>
+            <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Loading Command Center...</p>
+          </div>
+        </div>
+
+        <div *ngIf="!loading">
+
+          <!-- ── ROW 1: KPI Cards ── -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+
+            <!-- Total Orders -->
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-[#E85D5D]/5 rounded-full blur-2xl group-hover:bg-[#E85D5D]/10 transition-colors"></div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-[#E85D5D] shadow-inner">
+                  <span class="material-symbols-rounded !text-[20px]">shopping_bag</span>
+                </div>
+                <span class="badge border-emerald-100 bg-emerald-50 text-emerald-600">{{ kpis.orders.open }} to target</span>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Sales Orders</p>
+              <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ kpis.orders.total }}</p>
+              <div class="mt-4 flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-[#E85D5D] rounded-full" [style.width]="kpis.orders.total ? ((kpis.orders.total - kpis.orders.open) / kpis.orders.total * 100) + '%' : '0%'"></div>
+                </div>
+                <span class="text-[10px] font-black text-slate-400">{{ kpis.orders.total - kpis.orders.open }} done</span>
+              </div>
+            </div>
+
+            <!-- Deliveries -->
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl group-hover:bg-orange-500/10 transition-colors"></div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 shadow-inner">
+                  <span class="material-symbols-rounded !text-[20px]">local_shipping</span>
+                </div>
+                <span class="badge border-orange-100 bg-orange-50 text-orange-600">{{ kpis.deliveries.pending }} pending</span>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Deliveries</p>
+              <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ kpis.deliveries.total }}</p>
+              <div class="mt-4 flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-orange-400 rounded-full" [style.width]="getDeliveryRate() + '%'"></div>
+                </div>
+                <span class="text-[10px] font-black text-slate-400">{{ getDeliveryRate() }}% shipped</span>
+              </div>
+            </div>
+
+            <!-- Invoices -->
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl group-hover:bg-violet-500/10 transition-colors"></div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-violet-500 shadow-inner">
+                  <span class="material-symbols-rounded !text-[20px]">receipt_long</span>
+                </div>
+                <span class="badge" [ngClass]="kpis.invoices.overdue > 0 ? 'badge-error' : 'badge-success'">
+                  {{ kpis.invoices.overdue > 0 ? kpis.invoices.overdue + ' overdue' : 'All clear' }}
+                </span>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Invoices</p>
+              <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ kpis.invoices.total }}</p>
+              <div class="mt-4 flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full" [ngClass]="kpis.invoices.overdue > 0 ? 'bg-rose-500' : 'bg-emerald-400'" [style.width]="getInvoiceOverdueRate() + '%'"></div>
+                </div>
+                <span class="text-[10px] font-black text-slate-400">{{ getInvoiceOverdueRate() }}% risked</span>
+              </div>
+            </div>
+
+            <!-- Outstanding Capital -->
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl"></div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600 shadow-inner">
+                  <span class="material-symbols-rounded !text-[20px]">account_balance</span>
+                </div>
+                <span class="badge bg-slate-50 text-slate-400 border-slate-100">EUR</span>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Outstanding</p>
+              <p class="text-3xl font-black text-slate-800 tracking-tighter">€ {{ kpis.value | number:'1.0-0' }}</p>
+              <p class="mt-auto text-[10px] text-slate-400 font-bold">Total exposure</p>
+            </div>
+
+            <!-- Credit Memos -->
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl"></div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shadow-inner">
+                  <span class="material-symbols-rounded !text-[20px]">description</span>
+                </div>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Credit Memos</p>
+              <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ kpis.creditMemos.total }}</p>
+              <p class="mt-auto text-[10px] text-slate-400 font-bold">€ {{ kpis.creditMemos.value | number:'1.0-0' }} adj.</p>
+            </div>
+
+          </div>
+
+          <!-- ── ROW 2: Main Charts ── -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+            <!-- Revenue Trend Line Chart (col-span-2) -->
+            <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+              <div class="flex justify-between items-start mb-5">
+                <div>
+                  <h3 class="text-[13px] font-black text-slate-800">Revenue Trend</h3>
+                  <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Monthly billing turnover</p>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#E85D5D]"></span>
+                  <span class="text-[9px] font-black text-slate-500">Billed Amount (EUR)</span>
+                </div>
+              </div>
+              <div class="h-56">
+                <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'line'"></canvas>
+              </div>
+            </div>
+
+            <!-- Document Distribution Donut -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col">
+              <div class="mb-5">
+                <h3 class="text-[13px] font-black text-slate-800">Document Mix</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Distribution by module</p>
+              </div>
+              <div class="flex-1 relative min-h-[150px]">
+                <canvas baseChart [data]="chartData" [options]="pieChartOptions" [type]="'doughnut'"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <p class="text-2xl font-black text-slate-800 tracking-tighter">{{ kpis.orders.total + kpis.deliveries.total + kpis.invoices.total + kpis.creditMemos.total }}</p>
+                  <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Docs</p>
+                </div>
+              </div>
+              <!-- Legend -->
+              <div class="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5">
+                <div *ngFor="let lbl of ['Sales','Deliveries','Invoices','Memos']; let i = index" class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-sm flex-shrink-0"
+                    [ngStyle]="{'background-color': ['#E85D5D','#f97316','#8B5CF6','#06b6d4'][i]}"></span>
+                  <span class="text-[9px] font-bold text-slate-500">{{ lbl }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── ROW 3: Aging + Sales Breakdown ── -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+            <!-- Aging Bar Chart (col-span-2) -->
+            <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+              <div class="flex justify-between items-start mb-5">
+                <div>
+                  <h3 class="text-[13px] font-black text-slate-800">Financial Aging Risk</h3>
+                  <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Outstanding balance by days past due</p>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-rose-50 text-[9px] font-black uppercase text-[#E85D5D] border border-rose-100">Risk View</span>
+              </div>
+              <div class="h-52">
+                <canvas baseChart [data]="agingChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+              </div>
+              <!-- Aging Legend -->
+              <div class="mt-4 flex gap-6 flex-wrap">
+                <div *ngFor="let l of [['Current','#10b981'],['1-30 Days','#f59e0b'],['31-60 Days','#ef4444'],['60+ Days','#7f1d1d']]" class="flex items-center gap-2">
+                  <span class="w-3 h-2 rounded-sm" [ngStyle]="{'background-color': l[1]}"></span>
+                  <span class="text-[9px] font-bold text-slate-500">{{ l[0] }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sales Type Horizontal Bar -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col">
+              <div class="mb-5">
+                <h3 class="text-[13px] font-black text-slate-800">Sales Breakdown</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Order type distribution</p>
+              </div>
+              <div class="flex-1 min-h-[150px]">
+                <canvas baseChart [data]="topSalesData" [options]="horizontalBarOptions" [type]="'bar'"></canvas>
+              </div>
+
+              <!-- Delivery Rate Gauge -->
+              <div class="mt-5 pt-5 border-t border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-[10px] font-black text-slate-500 uppercase tracking-wide">Delivery Rate</span>
+                  <span class="text-[13px] font-black text-slate-800">{{ getDeliveryRate() }}%</span>
+                </div>
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-1000"
+                    [ngClass]="getDeliveryRate() > 80 ? 'bg-emerald-400' : 'bg-amber-400'"
+                    [style.width]="getDeliveryRate() + '%'"></div>
+                </div>
+
+                <div class="flex justify-between items-center mt-3 mb-2">
+                  <span class="text-[10px] font-black text-slate-500 uppercase tracking-wide">Invoice Risk</span>
+                  <span class="text-[13px] font-black text-slate-800">{{ getInvoiceOverdueRate() }}%</span>
+                </div>
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-1000"
+                    [ngClass]="getInvoiceOverdueRate() === 0 ? 'bg-emerald-400' : getInvoiceOverdueRate() < 30 ? 'bg-amber-400' : 'bg-rose-500'"
+                    [style.width]="getInvoiceOverdueRate() + '%'"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── ROW 4: Activity Ledger ── -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-slate-50/40">
+              <div>
+                <h3 class="text-[13px] font-black text-slate-800">Global Activity Ledger</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">{{ filteredActivities.length }} records shown</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[9px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full uppercase tracking-widest">Live Feed</span>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="text-[9px] font-black uppercase text-slate-400 tracking-[0.14em] bg-slate-50/70">
+                    <th class="px-6 py-3.5">Reference ID</th>
+                    <th class="px-6 py-3.5">Module</th>
+                    <th class="px-6 py-3.5">Date</th>
+                    <th class="px-6 py-3.5">Status</th>
+                    <th class="px-6 py-3.5 text-right">Value (EUR)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                  <tr *ngFor="let act of filteredActivities" class="group hover:bg-slate-50/60 transition-colors">
+                    <td class="px-6 py-3.5">
+                      <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ act.id }}</span>
+                    </td>
+                    <td class="px-6 py-3.5">
+                      <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest"
+                        [ngClass]="{
+                          'bg-rose-50 text-[#E85D5D]': act.type === 'Order',
+                          'bg-orange-50 text-orange-600': act.type === 'Delivery',
+                          'bg-violet-50 text-violet-600': act.type === 'Invoice',
+                          'bg-cyan-50 text-cyan-600': act.type === 'Memo'
+                        }">{{ act.type }}</span>
+                    </td>
+                    <td class="px-6 py-3.5 text-[11px] font-semibold text-slate-500">{{ act.date | date:'dd MMM yyyy' }}</td>
+                    <td class="px-6 py-3.5">
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full"
+                          [ngClass]="act.status === 'Confirmed' || act.status === 'Shipped' || act.status === 'Billed' || act.status === 'Processed' ? 'bg-emerald-500' : 'bg-amber-400'"></span>
+                        <span class="text-[10px] font-bold"
+                          [ngClass]="act.status === 'Confirmed' || act.status === 'Shipped' || act.status === 'Billed' || act.status === 'Processed' ? 'text-emerald-600' : 'text-amber-600'">
+                          {{ act.status }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-3.5 text-right">
+                      <span *ngIf="act.val !== '-'" class="text-[12px] font-bold text-slate-800">€ {{ act.val | number:'1.2-2' }}</span>
+                      <span *ngIf="act.val === '-'" class="text-slate-300 font-black text-sm">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div *ngIf="filteredActivities.length === 0" class="py-16 text-center">
+                <span class="material-symbols-rounded !text-4xl text-slate-200 block mb-3">search_off</span>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No activities match your filters</p>
+                <button (click)="applyPreset('all')" class="mt-4 text-[10px] font-black text-[#E85D5D] hover:underline uppercase tracking-widest">Clear Filters</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /!loading -->
+      </div><!-- /dashboard -->
+
+      <!-- ════════════════════ MODULE VIEWS ════════════════════ -->
+      <div [class.hidden]="activeNav !== 'delivery'"><app-delivery class="block"></app-delivery></div>
+      <div [class.hidden]="activeNav !== 'invoice'"><app-invoice class="block"></app-invoice></div>
+      <div [class.hidden]="activeNav !== 'memo'"><app-memo class="block"></app-memo></div>
+      <div [class.hidden]="activeNav !== 'profile'"><app-profile class="block"></app-profile></div>
+      <div [class.hidden]="activeNav !== 'sales'"><app-sales class="block"></app-sales></div>
+      <div [class.hidden]="activeNav !== 'finance'"><app-finance class="block"></app-finance></div>
+
+    </div><!-- /p-8 -->
+  </main>
+</div>

@@ -1,0 +1,202 @@
+<div class="space-y-6 animate-in fade-in duration-500">
+
+  <!-- Header & Filters -->
+  <div class="flex flex-wrap justify-between items-end gap-5">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <div class="w-1 h-5 rounded-full bg-[#E85D5D]"></div>
+        <h2 class="text-2xl font-black text-slate-800 tracking-tighter">Financial Adjustments</h2>
+      </div>
+      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] ml-3">Credit & Debit Memorandums</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="relative">
+        <span class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 !text-[16px] text-slate-400">search</span>
+        <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Memo Ref ID..."
+          class="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl py-2.5 pl-10 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] w-52 shadow-sm transition-all">
+      </div>
+      <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm">
+        <span class="material-symbols-rounded !text-[15px] text-slate-400">date_range</span>
+        <input type="date" [(ngModel)]="startDate" (change)="onFilterChange(); activePreset='custom'"
+          class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
+        <span class="text-slate-300 text-xs">→</span>
+        <input type="date" [(ngModel)]="endDate" (change)="onFilterChange(); activePreset='custom'"
+          class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
+      </div>
+      <div class="flex gap-1">
+        <button *ngFor="let p of datePresets" (click)="applyPreset(p.key)"
+          class="px-4 py-2 rounded-2xl text-[9px] font-black uppercase tracking-wide transition-all"
+          [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-lg shadow-rose-200' : 'bg-white text-slate-500 border border-slate-100 hover:bg-slate-50'">
+          {{ p.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-amber-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mb-4 text-amber-500 shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">description</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Memos</p>
+      <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.total }}</p>
+    </div>
+
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-cyan-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 text-cyan-600 shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">add_circle</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Credit Memos</p>
+      <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.credits }}</p>
+      <p class="text-[10px] text-cyan-600 font-bold mt-2">+ € {{ metrics.creditValue | number:'1.0-0' }}</p>
+    </div>
+
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-rose-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center mb-4 text-[#E85D5D] shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">remove_circle</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Debit Memos</p>
+      <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.debits }}</p>
+      <p class="text-[10px] text-rose-500 font-bold mt-2">- € {{ metrics.debitValue | number:'1.0-0' }}</p>
+    </div>
+
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-slate-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-500 shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">balance</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Net Adj. Value</p>
+      <p class="text-2xl font-black text-slate-800 tracking-tighter">€ {{ metrics.value | number:'1.0-0' }}</p>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Monthly Value Trend -->
+    <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+      <div class="flex justify-between items-start mb-5">
+        <div>
+          <h3 class="text-[13px] font-black text-slate-800">Monthly Adjustment Trend</h3>
+          <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Total adjustment value per month</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <span class="w-2.5 h-2.5 rounded-sm bg-amber-500"></span>
+          <span class="text-[9px] font-black text-slate-500">Value (EUR)</span>
+        </div>
+      </div>
+      <div *ngIf="loading" class="h-44 flex items-center justify-center">
+        <div class="w-8 h-8 border-4 border-amber-100 border-t-amber-500 rounded-full animate-spin"></div>
+      </div>
+      <div *ngIf="!loading" class="h-44">
+        <canvas baseChart [data]="memoTrend" [options]="trendOptions" [type]="'bar'"></canvas>
+      </div>
+    </div>
+
+    <!-- Credit vs Debit Donut -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col">
+      <div class="mb-4">
+        <h3 class="text-[13px] font-black text-slate-800">Memo Type Split</h3>
+        <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Credits vs. Debits ratio</p>
+      </div>
+      <div class="flex-1 relative min-h-[140px]">
+        <canvas baseChart [data]="splitData" [options]="donutOptions" [type]="'doughnut'"></canvas>
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <p class="text-2xl font-black text-slate-800 tracking-tighter">{{ metrics.total }}</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Memos</p>
+        </div>
+      </div>
+      <div class="mt-4 space-y-2">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-cyan-600"></span>
+            <span class="text-[9px] font-bold text-slate-500">Credit Memos</span>
+          </div>
+          <span class="text-[9px] font-black text-slate-700">{{ metrics.credits }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[#E85D5D]"></span>
+            <span class="text-[9px] font-bold text-slate-500">Debit Memos</span>
+          </div>
+          <span class="text-[9px] font-black text-slate-700">{{ metrics.debits }}</span>
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+          <span class="text-[9px] font-bold text-slate-400">Unclassified</span>
+          <span class="text-[9px] font-black text-slate-500">{{ metrics.total - metrics.credits - metrics.debits }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Data Table -->
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-slate-50/40">
+      <div>
+        <h3 class="text-[13px] font-black text-slate-800">Adjustment Journal</h3>
+        <p class="text-[10px] text-slate-400 font-semibold mt-0.5">{{ filteredItems.length }} of {{ metrics.total }} records</p>
+      </div>
+      <div class="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-full px-3 py-1.5">
+        <span class="material-symbols-rounded !text-[14px] text-amber-500">edit_note</span>
+        <span class="text-[9px] font-black text-amber-600 uppercase tracking-widest">Post-Billing Corrections</span>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="flex flex-col items-center justify-center p-16 space-y-4">
+      <div class="animate-spin w-10 h-10 border-4 border-amber-100 border-t-amber-500 rounded-full"></div>
+      <p class="text-[10px] text-slate-300 font-black uppercase tracking-widest">Querying SAP Financial Journals...</p>
+    </div>
+
+    <div class="overflow-x-auto" *ngIf="!loading">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="text-[9px] font-black uppercase text-slate-400 tracking-[0.14em] bg-slate-50/70">
+            <th class="px-6 py-3.5">Memo Reference</th>
+            <th class="px-6 py-3.5">Execution Date</th>
+            <th class="px-6 py-3.5">Type</th>
+            <th class="px-6 py-3.5 text-right">Net Value</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          <tr *ngFor="let item of filteredItems" class="group hover:bg-slate-50/60 transition-colors">
+            <td class="px-6 py-3.5">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                  [ngClass]="isCreditMemo(item) ? 'bg-cyan-50' : 'bg-rose-50'">
+                  <span class="material-symbols-rounded !text-[13px]"
+                    [ngClass]="isCreditMemo(item) ? 'text-cyan-600' : 'text-[#E85D5D]'">
+                    {{ isCreditMemo(item) ? 'add' : 'remove' }}
+                  </span>
+                </div>
+                <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ item.VBELN }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-3.5 text-[11px] font-semibold text-slate-500">{{ item.ERDAT | date:'dd MMM yyyy' }}</td>
+            <td class="px-6 py-3.5">
+              <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest"
+                [ngClass]="isCreditMemo(item) ? 'bg-cyan-50 text-cyan-700' : 'bg-rose-50 text-[#E85D5D]'">
+                {{ item.FKART }}
+              </span>
+            </td>
+            <td class="px-6 py-3.5 text-right font-bold"
+              [ngClass]="isCreditMemo(item) ? 'text-cyan-700' : 'text-[#d94c4c]'">
+              <span *ngIf="isCreditMemo(item)">+</span><span *ngIf="!isCreditMemo(item)">-</span>
+              {{ item.NETWR | number:'1.2-2' }}
+              <span class="text-slate-400 font-medium ml-1 text-[10px]">EUR</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="filteredItems.length === 0" class="py-16 text-center">
+        <span class="material-symbols-rounded !text-4xl text-slate-200 block mb-3">description</span>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No matching memos detected</p>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,158 @@
+<div class="space-y-6 animate-in fade-in duration-500">
+
+  <!-- Header & Filters -->
+  <div class="flex flex-wrap justify-between items-end gap-5">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <div class="w-1 h-5 rounded-full bg-[#E85D5D]"></div>
+        <h2 class="text-2xl font-black text-slate-800 tracking-tighter">Billing Execution</h2>
+      </div>
+      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] ml-3">Finalized Commercial Documentation</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="relative">
+        <span class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 !text-[16px] text-slate-400">search</span>
+        <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Invoice ID..."
+          class="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl py-2.5 pl-10 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] w-52 shadow-sm transition-all">
+      </div>
+      <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm">
+        <span class="material-symbols-rounded !text-[15px] text-slate-400">date_range</span>
+        <input type="date" [(ngModel)]="startDate" (change)="onFilterChange(); activePreset='custom'"
+          class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
+        <span class="text-slate-300 text-xs">→</span>
+        <input type="date" [(ngModel)]="endDate" (change)="onFilterChange(); activePreset='custom'"
+          class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
+      </div>
+      <div class="flex gap-1">
+        <button *ngFor="let p of datePresets" (click)="applyPreset(p.key)"
+          class="px-4 py-2 rounded-2xl text-[9px] font-black uppercase tracking-wide transition-all"
+          [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-lg shadow-rose-200' : 'bg-white text-slate-500 border border-slate-100 hover:bg-slate-50'">
+          {{ p.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-violet-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center mb-4 text-violet-500 shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">receipt_long</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Invoices</p>
+      <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.total }}</p>
+    </div>
+
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-emerald-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4 text-emerald-500 shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">payments</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Billed</p>
+      <p class="text-3xl font-black text-slate-800 tracking-tighter">€ {{ metrics.value | number:'1.0-0' }}</p>
+    </div>
+
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-[#E85D5D]/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center mb-4 text-[#E85D5D] shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">calculate</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Avg Invoice</p>
+      <p class="text-3xl font-black text-slate-800 tracking-tighter">€ {{ metrics.avgValue | number:'1.0-0' }}</p>
+    </div>
+
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-cyan-500/5 rounded-full blur-2xl"></div>
+      <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 text-cyan-600 shadow-inner">
+        <span class="material-symbols-rounded !text-[20px]">filter_list</span>
+      </div>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Range Total</p>
+      <p class="text-4xl font-black text-slate-800 tracking-tighter">€ {{ getFilteredValue() | number:'1.0-0' }}</p>
+    </div>
+  </div>
+
+  <!-- Monthly Billing Trend Chart -->
+  <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+    <div class="flex justify-between items-start mb-5">
+      <div>
+        <h3 class="text-[13px] font-black text-slate-800">Monthly Billing Trend</h3>
+        <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Invoiced amounts by month</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <span class="w-2.5 h-2.5 rounded-sm bg-violet-500"></span>
+        <span class="text-[9px] font-black text-slate-500">Net Value (EUR)</span>
+      </div>
+    </div>
+    <div *ngIf="loading" class="h-44 flex items-center justify-center">
+      <div class="w-8 h-8 border-4 border-violet-100 border-t-violet-500 rounded-full animate-spin"></div>
+    </div>
+    <div *ngIf="!loading" class="h-44">
+      <canvas baseChart [data]="trendData" [options]="trendOptions" [type]="'bar'"></canvas>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-slate-50/40">
+      <div>
+        <h3 class="text-[13px] font-black text-slate-800">Billing Records</h3>
+        <p class="text-[10px] text-slate-400 font-semibold mt-0.5">{{ filteredItems.length }} of {{ metrics.total }} invoices</p>
+      </div>
+      <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-full px-3 py-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">All Reconciled</span>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="flex flex-col items-center justify-center p-16 space-y-4">
+      <div class="animate-spin w-10 h-10 border-4 border-violet-100 border-t-violet-500 rounded-full"></div>
+      <p class="text-[10px] text-slate-300 font-black uppercase tracking-widest">Querying SAP SD-Billing Core...</p>
+    </div>
+
+    <div class="overflow-x-auto" *ngIf="!loading">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="text-[9px] font-black uppercase text-slate-400 tracking-[0.14em] bg-slate-50/70">
+            <th class="px-6 py-3.5">Invoice ID</th>
+            <th class="px-6 py-3.5">Billing Date</th>
+            <th class="px-6 py-3.5">Category</th>
+            <th class="px-6 py-3.5 text-right">Billed Amount (EUR)</th>
+            <th class="px-6 py-3.5 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          <tr *ngFor="let item of filteredItems" class="group hover:bg-slate-50/60 transition-colors">
+            <td class="px-6 py-3.5">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-rounded !text-[14px] text-violet-500">verified</span>
+                </div>
+                <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ item.VBELN }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-3.5 text-[11px] font-semibold text-slate-500">{{ item.FKDAT | date:'dd MMM yyyy' }}</td>
+            <td class="px-6 py-3.5">
+              <span class="px-2.5 py-1 bg-violet-50 text-violet-600 rounded-lg text-[9px] font-black uppercase tracking-widest">Standard Billing</span>
+            </td>
+            <td class="px-6 py-3.5 text-right">
+              <span class="text-[12px] font-bold text-slate-800">€ {{ item.NETWR | number:'1.2-2' }}</span>
+            </td>
+            <td class="px-6 py-3.5 text-right">
+              <button (click)="downloadPdf(item.VBELN)" 
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-50 text-violet-600 hover:bg-violet-600 hover:text-white transition-all group/btn">
+                <span class="material-symbols-rounded !text-[16px]">picture_as_pdf</span>
+                <span class="text-[10px] font-black uppercase tracking-wider">PDF</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="filteredItems.length === 0" class="py-16 text-center">
+        <span class="material-symbols-rounded !text-4xl text-slate-200 block mb-3">receipt_long</span>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No matching invoices</p>
+      </div>
+    </div>
+  </div>
+
+</div>
