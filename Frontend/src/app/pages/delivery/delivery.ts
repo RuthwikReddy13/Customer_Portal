@@ -106,31 +106,50 @@ export class Delivery implements OnInit {
   }
 
   buildCharts() {
-    // Donut
-    this.statusData = {
-      ...this.statusData,
-      datasets: [{ ...this.statusData.datasets[0], data: [this.metrics.shipped, this.metrics.pending] }]
-    };
-
-    // Monthly trend
     const monthShippedMap: Record<string, number> = {};
     const monthPendingMap: Record<string, number> = {};
+
     this.filteredItems.forEach(item => {
-      const d = this.parseDate(item.ERDAT); 
-      if (d) {
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-        // Check WADAT or WADAT_RAW for actual shipment
-        if (item.WADAT && item.WADAT !== '0000-00-00' && item.WADAT !== '00000000') monthShippedMap[key] = (monthShippedMap[key] || 0) + 1;
-        else monthPendingMap[key] = (monthPendingMap[key] || 0) + 1;
+      const d = this.parseDate(item.WADAT); // ✅ FIXED
+
+      if (!d) {
+        // Pending (no valid date)
+        const key = 'No Date';
+        monthPendingMap[key] = (monthPendingMap[key] || 0) + 1;
+        return;
       }
+
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+      // If valid WADAT → shipped
+      monthShippedMap[key] = (monthShippedMap[key] || 0) + 1;
     });
-    const allKeys = [...new Set([...Object.keys(monthShippedMap), ...Object.keys(monthPendingMap)])].sort();
-    const labels = allKeys.map(m => { const [y, mo] = m.split('-'); return new Date(+y, +mo - 1).toLocaleString('en-GB', { month: 'short', year: '2-digit' }); });
+
+    const allKeys = [...new Set([
+      ...Object.keys(monthShippedMap),
+      ...Object.keys(monthPendingMap)
+    ])].sort();
+
+    const labels = allKeys.map(m => {
+      if (m === 'No Date') return 'Pending';
+      const [y, mo] = m.split('-');
+      return new Date(+y, +mo - 1).toLocaleString('en-GB', {
+        month: 'short',
+        year: '2-digit'
+      });
+    });
+
     this.deliveryTrend = {
       labels,
       datasets: [
-        { ...this.deliveryTrend.datasets[0], data: allKeys.map(k => monthShippedMap[k] || 0) },
-        { ...this.deliveryTrend.datasets[1], data: allKeys.map(k => monthPendingMap[k] || 0) }
+        {
+          ...this.deliveryTrend.datasets[0],
+          data: allKeys.map(k => monthShippedMap[k] || 0)
+        },
+        {
+          ...this.deliveryTrend.datasets[1],
+          data: allKeys.map(k => monthPendingMap[k] || 0)
+        }
       ]
     };
   }
@@ -154,6 +173,12 @@ export class Delivery implements OnInit {
 
   onFilterChange() { this.applyFilters(); }
 
+  /** Strip leading zeros from SAP document numbers */
+  stripZeros(val: string): string {
+    if (!val) return '';
+    return val.replace(/^0+/, '') || val;
+  }
+
   /** Parse SAP dates: YYYY-MM-DD or YYYYMMDD */
   parseDate(raw: string): Date | null {
     if (!raw || raw === '00000000' || raw === '0000-00-00') return null;
@@ -161,7 +186,7 @@ export class Delivery implements OnInit {
       const d = new Date(raw.substring(0, 10)); return isNaN(d.getTime()) ? null : d;
     }
     if (/^\d{8}$/.test(raw)) {
-      const d = new Date(`${raw.substring(0,4)}-${raw.substring(4,6)}-${raw.substring(6,8)}`);
+      const d = new Date(`${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}`);
       return isNaN(d.getTime()) ? null : d;
     }
     return null;
@@ -169,7 +194,7 @@ export class Delivery implements OnInit {
 
   applyFilters() {
     const start = this.startDate ? new Date(this.startDate) : null;
-    const end   = this.endDate   ? new Date(this.endDate)   : null;
+    const end = this.endDate ? new Date(this.endDate) : null;
     if (end) end.setHours(23, 59, 59, 999);
 
     this.filteredItems = this.items.filter(item => {
@@ -179,10 +204,10 @@ export class Delivery implements OnInit {
         (item.LFART || '').toLowerCase().includes(q); // Delivery Type
 
       let matchDate = true;
-      const d = this.parseDate(item.ERDAT);
+      const d = this.parseDate(item.WADAT);
       if (d) {
         if (start && d < start) matchDate = false;
-        if (end   && d > end)   matchDate = false;
+        if (end && d > end) matchDate = false;
       } else if (start || end) { matchDate = false; }
       return matchSearch && matchDate;
     });

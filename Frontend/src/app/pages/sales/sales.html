@@ -1,7 +1,7 @@
 <div class="space-y-6 animate-in fade-in duration-500">
 
-  <!-- Header & Filters -->
-  <div class="flex flex-wrap justify-between items-end gap-5">
+  <!-- Sticky Header & Filters -->
+  <div class="sticky top-[68px] z-10 bg-white/95 backdrop-blur-md py-4 border-b border-slate-100 -mx-8 px-8 -mt-8 flex flex-wrap justify-between items-center gap-5 shadow-sm">
     <div>
       <div class="flex items-center gap-2 mb-1">
         <div class="w-1 h-5 rounded-full bg-[#E85D5D]"></div>
@@ -13,9 +13,9 @@
       <div class="relative">
         <span class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 !text-[16px] text-slate-400">search</span>
         <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Ref ID..."
-          class="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl py-2.5 pl-10 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] w-52 shadow-sm transition-all">
+          class="bg-slate-50 border border-slate-200 rounded-2xl py-2 pl-10 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] w-52 transition-all">
       </div>
-      <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm">
+      <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2">
         <span class="material-symbols-rounded !text-[15px] text-slate-400">date_range</span>
         <input type="date" [(ngModel)]="startDate" (change)="onFilterChange(); activePreset='custom'"
           class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
@@ -26,7 +26,7 @@
       <div class="flex gap-1">
         <button *ngFor="let p of datePresets" (click)="applyPreset(p.key)"
           class="px-4 py-2 rounded-2xl text-[9px] font-black uppercase tracking-wide transition-all"
-          [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-lg shadow-rose-200' : 'bg-white text-slate-500 border border-slate-100 hover:bg-slate-50'">
+          [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-lg shadow-rose-200' : 'bg-slate-50 text-slate-500 border border-slate-100 hover:bg-slate-100'">
           {{ p.label }}
         </button>
       </div>
@@ -150,7 +150,7 @@
               <div class="flex items-center gap-2.5">
                 <span class="w-2 h-2 rounded-full flex-shrink-0"
                   [ngClass]="item.AUART === 'AF' || item.AUART === 'AA' ? 'bg-violet-400' : 'bg-amber-400'"></span>
-                <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ item.VBELN }}</span>
+                <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ stripZeros(item.VBELN) }}</span>
               </div>
             </td>
             <td class="px-6 py-3.5">

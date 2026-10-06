@@ -1,7 +1,7 @@
 <div class="space-y-6 animate-in fade-in duration-500">
 
-  <!-- Header & Filters -->
-  <div class="flex flex-wrap justify-between items-end gap-5">
+  <!-- Sticky Header & Filters -->
+  <div class="sticky top-[68px] z-10 bg-white/95 backdrop-blur-md py-4 border-b border-slate-100 -mx-8 px-8 -mt-8 flex flex-wrap justify-between items-center gap-5 shadow-sm">
     <div>
       <div class="flex items-center gap-2 mb-1">
         <div class="w-1 h-5 rounded-full bg-[#E85D5D]"></div>
@@ -13,9 +13,9 @@
       <div class="relative">
         <span class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 !text-[16px] text-slate-400">search</span>
         <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Delivery ID..."
-          class="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl py-2.5 pl-10 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] w-52 shadow-sm transition-all">
+          class="bg-slate-50 border border-slate-200 rounded-2xl py-2 pl-10 pr-4 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#E85D5D]/20 focus:border-[#E85D5D] w-52 transition-all">
       </div>
-      <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm">
+      <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2">
         <span class="material-symbols-rounded !text-[15px] text-slate-400">date_range</span>
         <input type="date" [(ngModel)]="startDate" (change)="onFilterChange(); activePreset='custom'"
           class="bg-transparent border-none text-[10px] font-bold text-slate-600 focus:outline-none w-[96px]">
@@ -26,7 +26,7 @@
       <div class="flex gap-1">
         <button *ngFor="let p of datePresets" (click)="applyPreset(p.key)"
           class="px-4 py-2 rounded-2xl text-[9px] font-black uppercase tracking-wide transition-all"
-          [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-lg shadow-rose-200' : 'bg-white text-slate-500 border border-slate-100 hover:bg-slate-50'">
+          [ngClass]="activePreset === p.key ? 'bg-[#E85D5D] text-white shadow-lg shadow-rose-200' : 'bg-slate-50 text-slate-500 border border-slate-100 hover:bg-slate-100'">
           {{ p.label }}
         </button>
       </div>
@@ -35,7 +35,8 @@
 
   <!-- KPI Cards -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+    <div
+      class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-slate-500/5 rounded-full blur-2xl"></div>
       <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center mb-4 text-slate-500 shadow-inner">
         <span class="material-symbols-rounded !text-[20px]">local_shipping</span>
@@ -44,16 +45,19 @@
       <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.total }}</p>
     </div>
 
-    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+    <div
+      class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-emerald-500/5 rounded-full blur-2xl"></div>
-      <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4 text-emerald-500 shadow-inner">
+      <div
+        class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4 text-emerald-500 shadow-inner">
         <span class="material-symbols-rounded !text-[20px]">done_all</span>
       </div>
       <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Shipped</p>
       <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.shipped }}</p>
     </div>
 
-    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+    <div
+      class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-amber-500/5 rounded-full blur-2xl"></div>
       <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mb-4 text-amber-500 shadow-inner">
         <span class="material-symbols-rounded !text-[20px]">schedule</span>
@@ -62,7 +66,8 @@
       <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ metrics.pending }}</p>
     </div>
 
-    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+    <div
+      class="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-[#E85D5D]/5 rounded-full blur-2xl"></div>
       <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center mb-4 text-[#E85D5D] shadow-inner">
         <span class="material-symbols-rounded !text-[20px]">speed</span>
@@ -148,7 +153,7 @@
         <thead>
           <tr class="text-[9px] font-black uppercase text-slate-400 tracking-[0.14em] bg-slate-50/70">
             <th class="px-6 py-3.5">Delivery ID</th>
-            <th class="px-6 py-3.5">Entry Date</th>
+            <th class="px-6 py-3.5">Delivery Type</th>
             <th class="px-6 py-3.5">Shipment Status</th>
             <th class="px-6 py-3.5 text-right">Actual Ship Date</th>
           </tr>
@@ -158,25 +163,29 @@
             <td class="px-6 py-3.5">
               <div class="flex items-center gap-2.5">
                 <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                  [ngClass]="item.WADAT !== '0000-00-00' ? 'bg-emerald-50' : 'bg-amber-50'">
+                  [ngClass]="parseDate(item.WADAT) ? 'bg-emerald-50' : 'bg-amber-50'">
                   <span class="material-symbols-rounded !text-[14px]"
-                    [ngClass]="item.WADAT !== '0000-00-00' ? 'text-emerald-500' : 'text-amber-500'">
-                    {{ item.WADAT !== '0000-00-00' ? 'check_circle' : 'schedule' }}
+                    [ngClass]="parseDate(item.WADAT) ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ parseDate(item.WADAT) ? 'check_circle' : 'schedule' }}
                   </span>
                 </div>
-                <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ item.VBELN }}</span>
+                <span class="text-[12px] font-bold text-slate-700 tracking-tight font-mono">{{ stripZeros(item.VBELN) }}</span>
               </div>
             </td>
-            <td class="px-6 py-3.5 text-[11px] font-semibold text-slate-500">{{ item.ERDAT | date:'dd MMM yyyy' }}</td>
+            <td class="px-6 py-3.5">
+              <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-slate-100 text-slate-600"
+                *ngIf="item.LFART">{{ item.LFART }}</span>
+              <span *ngIf="!item.LFART" class="text-slate-300 font-black text-sm">—</span>
+            </td>
             <td class="px-6 py-3.5">
               <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest"
-                [ngClass]="item.WADAT !== '0000-00-00' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'">
-                {{ item.WADAT !== '0000-00-00' ? 'Picked & Shipped' : 'Pending Allocation' }}
+                [ngClass]="parseDate(item.WADAT) ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'">
+                {{ parseDate(item.WADAT) ? 'Picked & Shipped' : 'Pending Allocation' }}
               </span>
             </td>
             <td class="px-6 py-3.5 text-right">
-              <span *ngIf="item.WADAT !== '0000-00-00'" class="text-[11px] font-bold text-slate-800">{{ item.WADAT | date:'dd MMM yyyy' }}</span>
-              <span *ngIf="item.WADAT === '0000-00-00'" class="text-slate-300 font-black text-sm">—</span>
+              <span *ngIf="parseDate(item.WADAT)" class="text-[11px] font-bold text-slate-800">{{ item.WADAT | date:'dd MMM yyyy' }}</span>
+              <span *ngIf="!parseDate(item.WADAT)" class="text-slate-300 font-black text-sm">—</span>
             </td>
           </tr>
         </tbody>

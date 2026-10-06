@@ -132,6 +132,12 @@ export class Invoice implements OnInit {
 
   onFilterChange() { this.applyFilters(); }
 
+  /** Strip leading zeros from SAP document numbers */
+  stripZeros(val: string): string {
+    if (!val) return '';
+    return val.replace(/^0+/, '') || val;
+  }
+
   /** Parse SAP dates: YYYY-MM-DD or YYYYMMDD */
   parseDate(raw: string): Date | null {
     if (!raw || raw === '00000000' || raw === '0000-00-00') return null;

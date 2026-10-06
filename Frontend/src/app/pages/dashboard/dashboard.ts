@@ -282,7 +282,7 @@ export class Dashboard implements OnInit {
     };
 
     this.kpis.orders.total = fSales.length;
-    this.kpis.orders.open = fSales.filter((s: any) => s.GBSTK !== 'C').length;
+    this.kpis.orders.open = fSales.filter((s: any) => (s.GBSTK || s.gbstk) === 'A').length;
     this.kpis.deliveries.total = fDeliveries.length;
     this.kpis.deliveries.shipped = fDeliveries.filter((d: any) => d.WADAT && d.WADAT !== '0000-00-00' && d.WADAT !== '00000000').length;
     this.kpis.deliveries.pending = fDeliveries.length - this.kpis.deliveries.shipped;

@@ -186,6 +186,12 @@ export class Finance implements OnInit {
 
   onFilterChange() { this.applyFilters(); }
 
+  /** Strip leading zeros from SAP document numbers */
+  stripZeros(val: string): string {
+    if (!val) return '';
+    return val.replace(/^0+/, '') || val;
+  }
+
   /** Parse SAP dates: handles YYYY-MM-DD, YYYYMMDD, and empty/zero values */
   parseDate(raw: string): Date | null {
     if (!raw || raw === '00000000' || raw === '0000-00-00') return null;
@@ -210,7 +216,7 @@ export class Finance implements OnInit {
     this.filteredItems = this.items.filter(item => {
       const matchSearch =
         (item.VBELN || '').toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        (item.BLART || '').toLowerCase().includes(this.searchQuery.toLowerCase());
+        (item.WAERK || '').toLowerCase().includes(this.searchQuery.toLowerCase());
 
       let matchDate = true;
       const d = this.parseDate(item.FKDAT);
